@@ -8,7 +8,7 @@ from django.contrib.contenttypes.models import ContentType
 
 
 class Question(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='questions')
     title = models.CharField(max_length=60)
     slug = models.SlugField(max_length=60, db_index=True)
     text_question = models.TextField(max_length=500)
@@ -29,7 +29,7 @@ class Question(models.Model):
 
 
 class Answer(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE) # неуверен что нужен on_delete
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='answer') # неуверен что нужен on_delete
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='answers')
     text_answer = models.TextField(max_length=500)
     is_correct = models.BooleanField(default=False)
