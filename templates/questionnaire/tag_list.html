@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Tags{% endblock %}
+
+{% block content %}
+    {% for tag in tag_list %}
+        <p>{{ tag.name }}</p>
+        <p>{{ tag.taggit_taggeditem_items.count }}</p>
+    {% endfor %}
+        {% if page_obj %}
+            {% include "pagination.html" with page=page_obj %}
+        {% endif %}
+{% endblock %}

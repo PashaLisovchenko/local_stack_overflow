@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+    Profile: {{ user.username }}
+{% endblock %}
+
+{% block content %}
+<div class="profile">
+    <div class="image-user">
+        <div class="avatar-card">
+            <img src="{{ user.profile.image.url }}">
+        </div>
+    </div>
+    <div class="about-user">
+        <h1>{{ user.username }}
+            <span>
+                {{ user.questions.count }} questions,
+                {{ user.answer.count }} answers
+            </span>
+            {% if request.user == user %}
+            <span style="float: right; font-size: 1.5rem">
+                <a class="orange-link" href="{% url 'accounts:update_profile' id=user.id %}" >Update</a>
+                |
+                <a class="orange-link" href="{% url "accounts:logout" %}">Logout</a>
+            </span>
+            {% endif %}
+        </h1>
+        {% if user.first_name and user.last_name %}
+            <p><span>Full name: </span>{{ user.first_name }} {{ user.last_name }}</p>
+        {% endif %}
+        <p>
+            <span>About me: </span>
+            {% if user.profile.bio %}
+                {{ user.profile.bio }}
+                {% else %}
+                Write about yourself in profile.
+            {% endif %}
+        </p>
+        <i><sub>sign up{{ user.profile.created }}</sub></i>
+        <div class="additional-info">
+            <p>
+                <img class="small-icon" src="{% static "img/mail.png" %}" alt="">
+                {{ user.email }}
+            </p>
+            <p>
+                <img class="small-icon" src="{% static "img/github.png" %}" alt="">
+                {% if user.profile.link_github %}
+                    <a href="{{ user.profile.link_github }}">{{ user.username }}</a>
+                    {% else %}
+                    You can update, add link github in profile.
+                {% endif %}
+            </p>
+            <p>
+                <img class="small-icon" src="{% static "img/location.png" %}" alt="">
+                {% if user.profile.location %}
+                    {{ user.profile.location }}
+                    {% else %}
+                    You can update, add location in profile.
+                {% endif %}
+            </p>
+        </div>
+    </div>
+</div>
+<div class="profile-question">
+    <h2>Question({{ user.questions.count }})</h2>
+    {% for user_question in user_question_list %}
+        <p>
+            <span class="profile_likes">{{ user_question.users_like.count }}</span>
+            <a href="#">{{ user_question.title }}</a>
+        </p>
+    {% endfor %}
+</div>
+<div class="profile-answer">
+    <h2>Answer({{ user.answer.count }})</h2>
+    {% for user_answer in user_answer_list %}
+        <p>
+            <span class="profile_likes">{{ user_answer.users_like.count }}</span>
+            <a href="#">{{ user_answer.question.title }}</a>
+        </p>
+    {% endfor %}
+</div>
+
+{% endblock %}

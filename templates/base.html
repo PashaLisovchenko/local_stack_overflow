@@ -1,0 +1,55 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{% block title %}{% endblock %}</title>
+    <link href="{% static "/css/base.css" %}" rel="stylesheet">
+    <script src="{% static "/js/tab_links.js" %}"></script>{#??магия??#}
+<body>
+
+    <header>
+        <a href="/"><span class="logo">Stack Overflow<sub>local</sub></span></a>
+        {#{% url 'books:author_list' %}#}
+        <ul class="menu">
+            <li {% if section == "Question" %}class="selected"{% endif %}>
+                <a href="{% url 'question:home_page' %}">Questions</a>
+            </li>
+            <li {% if section == "Tags" %}class="selected"{% endif %}>
+                <a href="{% url 'question:tags' %}">Tags</a>
+            </li>
+            <li {% if section == "Users" %}class="selected"{% endif %}>
+                <a href="{% url 'question:users' %}">Users</a>
+            </li>
+        </ul>
+
+        <ul class="menu-right">
+            {% if request.user.is_authenticated %}
+                <li>
+                    <img class="header-account-image" src="{{ request.user.profile.image.url }}">
+                </li>
+                <li>
+                    <a class="orange-link" href="{% url "accounts:profile" request.user.id %}">{{ request.user.username}}</a>
+                </li>
+            {% else %}
+               <li>
+                    <a class="login-btn" href="{% url 'accounts:login' %}">Sing In</a>
+                </li>
+                <li>
+                    <a class="registration-btn" href="{% url 'accounts:signup' %}">Sing Up</a>
+                </li>
+            {% endif %}
+        </ul>
+
+    </header>
+
+    <div id="content">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+</body>
+</html>

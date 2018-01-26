@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Users{% endblock %}
+
+{% block content %}
+    <div class="user-list">
+        {% for user in user_list %}
+            <div class="user">
+                <img class="image-user-list" src="{{ user.profile.image.url }}" alt="">
+                <p>{{ user.username }}</p>
+                <p>{{ user.profile.location }}</p>
+                {% for questions in user.questions.all %}
+                    {% for tags in questions.tags.all %}
+                        {{ tags }}
+                    {% endfor %}
+
+{#                    <a href="{% url "blog:post_list_by_tag" tag.slug %}">#}
+{#                    {{ tag.name }}#}
+{#                    </a>#}
+                    {% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
+    {% if page_obj %}
+        {% include "pagination.html" with page=page_obj %}
+    {% endif %}
+{% endblock %}

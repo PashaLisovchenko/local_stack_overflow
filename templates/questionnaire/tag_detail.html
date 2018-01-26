@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}tagged with "{{ tag.name }}"{% endblock %}
+
+{% block content %}
+    <h2>Questions tagged with "{{ tag.name }}" <a class="ask-question-btn" href="#">Ask Question</a></h2>
+    <div class="questions_list">
+    {% for question in questions %}
+        <div class="question">
+            <div class="statistic-question">
+                <p>{{ question.users_like.count }}</p>
+                <span>Votes</span>
+                <p>{{ question.answers.count }}</p>
+                <span>Answers</span>
+            </div>
+            <div class="text-question">
+                <p><a class="orange-link" href="#">{{ question.title }}</a></p>
+                <p>{{ question.text_question|truncatechars:300}}</p>
+                <p class="tags">
+                    {% for tag in question.tags.all %}
+                        <a href="{% url "question:tag_detail" tag.slug %}">
+                            {{ tag.name }}
+                        </a>
+                    {% endfor %}
+                </p>
+                <div class="user-question">
+                    <p>
+                        <span class="date-question"><i>{{ question.created }}</i></span>
+                        <img class="header-account-image" src="{{ question.user.profile.image.url }}" alt="">
+                        <a href="{% url "accounts:profile" id=question.user.id %}">{{ question.user.username }}</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+    {% if page_obj %}
+        {% include "pagination.html" with page=page_obj %}
+    {% endif %}
+{% endblock %}

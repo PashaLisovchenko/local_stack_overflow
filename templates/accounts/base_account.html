@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}
+    {% if section == 'Login' %}
+        Login
+        {% else %}
+        Sign Up
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+     <!-- Tab links -->
+    <div class="tab">
+        <a {% if section == 'Login' %}class="tablinks active" {% else %}class="tablinks"{% endif %} href="{% url "accounts:login" %}">Sign In</a>
+        <a {% if section == 'CreateUser' %}class="tablinks active" {% else %}class="tablinks"{% endif %} href="{% url "accounts:signup" %}">Sign Up</a>
+    </div>
+
+    <!-- Tab content -->
+    {% if section == 'Login' %}
+        <div class="tabcontent">
+          {% include "accounts/login.html" with form=form %}
+        </div>
+    {% else %}
+        <div class="tabcontent">
+            {% include "accounts/registration.html" with form=form %}
+        </div>
+    {% endif %}
+{% endblock %}
