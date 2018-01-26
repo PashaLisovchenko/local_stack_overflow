@@ -8,16 +8,17 @@ from django.core.urlresolvers import reverse
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     link_github = models.URLField(max_length=100, blank=True)
-    image = models.ImageField(blank=True, null=True, upload_to='profile_image/')
+    image = models.ImageField(blank=True, null=True, upload_to='profile_image/', default='profile_image/default.png')
     bio = models.TextField(max_length=500, blank=True)
     location = models.CharField(max_length=30, blank=True)
     birth_date = models.DateField(null=True, blank=True)
+    created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.user.username
 
-    # def get_absolute_url(self):
-    #     return reverse('account:profile', args=[self.user.username])
+    def get_absolute_url(self):
+        return reverse('account:profile', args=[self.user.id])
 
 
 @receiver(post_save, sender=User)

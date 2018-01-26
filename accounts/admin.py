@@ -4,7 +4,7 @@ from .models import Profile
 
 
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ['show_git_url', 'bio', 'birth_date', 'location', ]
+    list_display = ['user','show_git_url', 'bio', 'birth_date', 'location']
 
     def show_git_url(self, obj):
         return format_html("<a href='{url}'>{url}</a>", url=obj.link_github)
