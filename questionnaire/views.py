@@ -1,7 +1,14 @@
 from django.contrib.auth.models import User
-from django.shortcuts import render
+from django.contrib.contenttypes.models import ContentType
+from django.http import JsonResponse
+from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
+from django.utils.text import slugify
 from django.views.generic import ListView, DetailView
-from .models import Question
+from django.views.generic.edit import FormMixin, FormView, CreateView
+
+from questionnaire.forms import AnswerForm, CommentForm, AddQuestion
+from .models import Question, Answer, Comment
 from taggit.models import Tag
 
 
@@ -30,25 +37,10 @@ class TagList(ListView):
 class UserList(ListView):
     template_name = 'questionnaire/user_list.html'
     model = User
-    paginate_by = 45
+    paginate_by = 36
 
     def get_context_data(self, **kwargs):
         context = super(UserList, self).get_context_data(**kwargs)
-
-        # names = Tag.objects.values_list('name', flat=True)
-        # print(names)
-        # user = User.objects.get(username='pasha')
-        # questions = user.questions.all()
-        # question_user = [q for q in questions]
-        # tags_user = [t.tags.all() for t in question_user]
-        # print(tags_user)
-
-        # t = [t for t in tags_user]
-        # print(t)
-        # tag = [for t in tags_user]
-        # print(tag)
-
-        # documents = list(Document.objects.filter(name__in=names))
         context['section'] = 'Users'
         return context
 
@@ -64,3 +56,139 @@ class QuestionListByTag(DetailView):
         context['questions'] = questions
         context['section'] = 'Question'
         return context
+
+
+class QuestionDetail(FormMixin, DetailView):
+    template_name = 'questionnaire/question_detail.html'
+    model = Question
+    form_class = AnswerForm
+    slug_url_kwarg = 'slug'
+    pk_url_kwarg = 'id'
+
+    def get_context_data(self, **kwargs):
+        context = super(QuestionDetail, self).get_context_data(**kwargs)
+        context['section'] = 'Question'
+        form_comment = CommentForm()
+        context['form_comment'] = form_comment
+
+        question = self.object
+
+        content_type = ContentType.objects.get_for_model(question)
+        question_comment_list = Comment.objects.filter(
+            content_type__pk=content_type.pk,
+            object_id=question.pk
+        )
+        answers = question.answers.all()
+        answers_id = [a.id for a in answers]
+
+        content_type = ContentType.objects.get_for_model(Answer)
+        answers_comment_list = Comment.objects.filter(
+            content_type__pk=content_type.pk,
+            object_id__in=answers_id
+        )
+
+        context['question_comment_list'] = question_comment_list
+        context['answers_comment_list'] = answers_comment_list
+        return context
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        object = self.get_object()
+        user = self.request.user
+        text_answer = self.request.POST.get("text_answer")
+        Answer.objects.create(user=user, question=object, text_answer=text_answer)
+        return redirect(object)
+
+
+class CommentAddAnswer(DetailView, FormMixin):
+    form_class = CommentForm
+    model = Answer
+    pk_url_kwarg = "id"
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        object = self.get_object()
+        user = self.request.user
+        text_comment = self.request.POST.get('comment')
+        content_type = ContentType.objects.get_for_model(object)
+        print(content_type)
+        new_comment = Comment.objects.create(
+            content_type=content_type,
+            object_id=object.pk,
+            user=user,
+            comment=text_comment
+        )
+        new_comment.save()
+        return redirect(object.question)
+
+
+class CommentAddQuestion(DetailView, FormMixin):
+    form_class = CommentForm
+    model = Question
+    pk_url_kwarg = "id"
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        object = self.get_object()
+        user = self.request.user
+        text_comment = self.request.POST.get('comment')
+        content_type = ContentType.objects.get_for_model(object)
+        print(content_type)
+        new_comment = Comment.objects.create(
+            content_type=content_type,
+            object_id=object.pk,
+            user=user,
+            comment=text_comment
+        )
+        new_comment.save()
+        return redirect(object)
+
+
+class AddQuestionView(CreateView):
+    template_name = 'questionnaire/add_question.html'
+    form_class = AddQuestion
+    model = Question
+
+    def form_valid(self, form):
+        cl = form.cleaned_data
+        tags = cl['tags']
+        slug = slugify(cl['title'])
+        user = self.request.user
+        question = Question(user=user, slug=slug, title=cl['title'], text_question=cl['text_question'])
+        question.save()
+        for tag in tags:
+            question.tags.add(tag)
+        return redirect(reverse_lazy('question:question_detail', kwargs={'id':question.id, 'slug': question.slug}))
+
+
+def current_answer(request):
+    answer = request.GET.get('answer_id', None)
+    correct = request.GET.get('correct', None)
+    answer = Answer.objects.get(id=answer)
+    if correct == 'true':
+        answer.is_correct = True
+    elif correct == 'false':
+        answer.is_correct = False
+    answer.save()
+    data = {
+        'is_correct': answer.is_correct
+    }
+    return JsonResponse(data)
