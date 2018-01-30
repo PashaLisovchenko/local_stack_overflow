@@ -133,3 +133,19 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(
     BASE_DIR, "media"
 )
+
+
+# REDIS related settings
+REDIS_HOST = 'localhost'
+REDIS_PORT = '6379'
+CELERY_BROKER_URL = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
+BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
+CELERY_RESULT_BACKEND = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
+
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'lisovchenko.pasha@gmail.com'
+EMAIL_HOST_PASSWORD = 'qwerty123xaxa'
+EMAIL_PORT = 587
+# celery worker -A local_stack_overflow --loglevel=debug --concurrency=4

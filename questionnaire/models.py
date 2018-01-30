@@ -1,6 +1,9 @@
 import datetime
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.db import models
+from django.db.models import signals
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.contrib.auth.models import User
 from taggit.managers import TaggableManager
 from django.core.urlresolvers import reverse
@@ -44,6 +47,14 @@ class Answer(models.Model):
 
     # def get_absolute_url(self):
     #     return reverse('question:detail_question', args=[self.id, self.slug])
+
+
+def send_email_question_user(sender, instance, signal, *args, **kwargs):
+    from .tasks import send_message
+    send_message.delay(instance.pk)
+
+
+signals.post_save.connect(send_email_question_user, sender=Answer)
 
 
 class Comment(models.Model):
