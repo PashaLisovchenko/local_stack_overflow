@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Questions{% endblock %}
+
+{% block content %}
+    {% if request.user.is_authenticated %}
+    <h1 class="title-detail">
+        {{ question.title }}
+        <a class="ask-question-btn" href="{% url "question:add_question" %}">Ask Question</a>
+    </h1>
+        {% else %}
+        <h2 class="need-login">Want ask question? Your need <a href="{% url "accounts:login" %}">Login</a></h2>
+        <h1 class="title-detail">
+            {{ question.title }}
+        </h1>
+    {% endif %}
+    <div class="questions_list">
+        <div class="question">
+            <div class="statistic-question">
+                <p>{{ question.users_like.count }}</p>
+                <span>Votes</span>
+            </div>
+            <div class="text-question-detail">
+                <p>{{ question.text_question }}</p>
+                <p class="tags">
+                    {% for tag in question.tags.all %}
+                        <a href="{% url "question:tag_detail" tag.slug %}">
+                            {{ tag.name }}
+                        </a>
+                    {% endfor %}
+                </p>
+                <div class="user-question user-detail-question">
+                    <p>
+                        <span class="date-question"><i>{{ question.created }}</i></span>
+                        <img class="header-account-image" src="{{ question.user.profile.image.url }}" alt="">
+                        <a href="{% url "accounts:profile" id=question.user.id %}">{{ question.user.username }}</a>
+                    </p>
+                </div>
+                <p>
+                    <a class="add-comment" id="q-add-comment_btn">add a comment</a>
+                </p>
+                <div class="comment-list" id="q-comment-list">
+                    {% for comment in question_comment_list.all %}
+                        <div class="comment">
+                            <p>
+                                {{ comment.comment }} &ndash;
+                                <a href="{{ comment.user.profile.get_absolute_url }}">{{ comment.user }}</a>
+                                <span class="date-comment"><i>{{ comment.added_at }}</i></span>
+                            </p>
+                        </div>
+                    {% endfor %}
+                    <a class="list-toggle" id="q-list-toggle">show more comments</a>
+                </div>
+            </div>
+
+            <div class="add-comment-form" id="q-comment_form">
+                <form action="{% url "question:comment-add-question" id=question.id %}" method="POST">
+                    {% csrf_token %}
+                    <label>Add comment</label>
+                    <p>{{ form_comment.comment }}</p>
+                    <p><input type="submit" value="Post Your Comment"></p>
+                </form>
+            </div>
+            {% if question.answers.count > 0 %}
+                <h3 class="answer-count">{{ question.answers.count }} Answers</h3>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="answer-list">
+        {% for answer in question.answers.all %}
+        <div class="answer">
+            <div class="statistic-question">
+                <p>{{ answer.users_like.count }}</p>
+                <span>Votes</span>
+                {% if request.user == question.user or answer.is_correct %}
+                    <label class="label">
+                        <input  class="label__checkbox" type="checkbox" id="correct-answer" data-id="{{ answer.id }}"
+                                {% if answer.is_correct %}checked{% endif %}
+                                {% if request.user != question.user %}disabled{% endif %}
+                        />
+                        <span class="label__text">
+                            <span class="label__check" {% if request.user != question.user %}style="cursor: default" {% endif %}>
+                                <i class="fa fa-check icon"></i>
+                            </span>
+                        </span>
+                    </label>
+                {% endif %}
+            </div>
+            <div class="text-question-detail">
+                <p>{{ answer.text_answer }}</p>
+                <div class="tags">
+
+                </div>
+                <div class="user-question">
+                    <p>
+                        <span class="date-question"><i>{{ answer.created }}</i></span>
+                        <img class="header-account-image" src="{{ answer.user.profile.image.url }}" alt="">
+                        <a href="{{ answer.user.profile.get_absolute_url }}">{{ answer.user.username }}</a>
+                    </p>
+                </div>
+                <p>
+                    <a class="add-comment" id="add-comment_btn" data-id="{{ answer.id }}">add a comment</a>
+                </p>
+                {{ answer.comment.all }}
+                <div class="comment-list" id="a-comment-list-{{ answer.id }}">
+                    {% for comment in answers_comment_list.all %}
+                        {% if comment.object_id == answer.id %}
+                            <div class="comment">
+                                <p>
+                                    {{ comment.comment }} &ndash;
+                                    <a href="{{ comment.user.profile.get_absolute_url }}">{{ comment.user }}</a>
+                                    <span class="date-comment"><i>{{ comment.added_at }}</i></span>
+                                </p>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                    <a class="list-toggle" id="a-list-toggle-{{ answer.id }}" data-id="{{ answer.id }}">show more comments</a>
+                </div>
+            </div>
+            <div class="add-comment-form" id="comment_form-{{ answer.id }}">
+                <form action="{% url "question:comment-add-answer" id=answer.id %}" method="POST">
+                    {% csrf_token %}
+                    <label>Add comment</label>
+                    <p>{{ form_comment.comment }}</p>
+                    <p><input type="submit" value="Post Your Comment"></p>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if request.user.is_authenticated %}
+        {% if request.user != question.user %}
+            <form action="" method="POST">{% csrf_token %}
+                <h2>Your Answer</h2>
+                {% for field in form %}
+                    <p>{{ field }}</p>
+                {% endfor %}
+                <p><input type="submit" value="Post Your Answer"></p>
+            </form>
+        {% endif %}
+        {% else %}
+        <h2 class="need-login center-answer">Want to answer? Your need <a href="{% url "accounts:login" %}">Login</a></h2>
+    {% endif %}
+{% endblock %}
