@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Question
+from .models import Question, Answer, Comment
 
 
 class QuestionAdmin(admin.ModelAdmin):
@@ -8,3 +8,17 @@ class QuestionAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Question, QuestionAdmin)
+
+
+class AnswerAdmin(admin.ModelAdmin):
+    list_display = ['user', 'question', 'text_answer', 'is_correct', ]
+
+
+admin.site.register(Answer, AnswerAdmin)
+
+
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ['user', 'comment', 'content_type', 'object_id', 'content_object', ]
+
+
+admin.site.register(Comment, CommentAdmin)

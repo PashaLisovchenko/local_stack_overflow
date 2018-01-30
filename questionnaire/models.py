@@ -20,12 +20,13 @@ class Question(models.Model):
 
     class Meta:
         index_together = (('id', 'slug'),)
+        ordering = ('-created', )
 
     def __str__(self):
         return self.user.username + ', ' + self.slug
 
-    # def get_absolute_url(self):
-    #     return reverse('question:detail_question', args=[self.id, self.slug])
+    def get_absolute_url(self):
+        return reverse('question:question_detail', args=[self.id, self.slug])
 
 
 class Answer(models.Model):
@@ -39,19 +40,19 @@ class Answer(models.Model):
     updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.user.username + str(self.id)
+        return self.user.username + ', ' + self.text_answer
 
     # def get_absolute_url(self):
     #     return reverse('question:detail_question', args=[self.id, self.slug])
 
 
-# class Comment(models.Model):
-#     content_type = models.ForeignKey(ContentType)
-#     object_id = models.PositiveIntegerField()
-#     content_object = GenericForeignKey('content_type', 'object_id')
-#     user = models.ForeignKey(User, related_name='comments')
-#     comment = models.CharField(max_length=300)
-#     added_at = models.DateTimeField(default=datetime.datetime.now)
-#
-#     class Meta:
-#         ordering = ('-added_at',)
+class Comment(models.Model):
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+    user = models.ForeignKey(User, related_name='comments')
+    comment = models.CharField(max_length=300)
+    added_at = models.DateTimeField(default=datetime.datetime.now)
+
+    class Meta:
+        ordering = ('added_at',)
