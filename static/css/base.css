@@ -145,10 +145,10 @@ header .login-btn:hover{
 }
 /*forms-account*/
 form {
-    width: 40rem; /* Ширина элемента в пикселах */
-    padding: 1rem; /* Поля вокруг текста */
-    margin: auto; /* Выравниваем по центру */
-    overflow:auto;
+    width: 40rem;
+    padding: 1rem;
+    margin: auto;
+    /*overflow:auto;*/
 }
 
 form p label {
@@ -276,6 +276,11 @@ input[type=submit], a.button {
     margin-right: 1rem;
     color: #6e6e6e;
 }
+.correct{
+    border: solid 2px #00b98b;
+    background-color: #5FBA7D;
+    color: #ffffff;
+}
 /*question list*/
 .questions_list{
     display: flex;
@@ -285,8 +290,10 @@ input[type=submit], a.button {
 }
 .question{
     font-size: 1.6rem;
-    border-top: 1px solid #cccccc;
     border-bottom: 1px solid #cccccc;
+}
+.question:nth-child(1){
+    border-top: 1px solid #cccccc;
 }
 .statistic-question{
     display: flex;
@@ -294,14 +301,37 @@ input[type=submit], a.button {
     align-items: center;
     float: left;
     width: 10%;
+    height: 100%;
+}
+.answers-stat, .votes-stat{
+    font-size: 1.5rem;
+    display: flex;
+    margin-top: .5rem;
+    height: 6rem;
+    padding: 1rem;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+.answers-stat p, .votes-stat p{
+    margin: 0;
+}
+.green-answer{
+    background-color: #5FBA7D;
+    color: #ffffff;
+    font-weight: bold;
 }
 .text-question{
-    width: 80%;
+    width: 90%;
     float: left;
 }
 .user-question{
-    display: inline;
+    display: flex;
     float: right;
+    width: 20%;
+    padding-right: 1rem;
+    padding-left: 1rem;
+    margin-bottom: 1rem;
 }
 .date-question{
     display: block;
@@ -341,15 +371,231 @@ input[type=submit], a.button {
 }
 /*user-list*/
 .user-list{
+    padding: 0 10rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+.user{
+    padding: 2rem 1rem;
+    width: 250px;
+    display: inline-flex;
+    margin-bottom: 4rem;
+}
+.user:hover{
+    background-color: #f4f8fb;
+    transition: background .1s ease-in-out;
+}
+.image-user-list{
+    width: 6rem;
+    height: 6rem;
+    box-shadow: 2px 2px 4px rgba(12,13,14,0.7);
+}
+.name-user{
+    font-size: 1.5rem;
+}
+.about-user-list{
+    margin-left: 1rem;
+    font-size: 1.2rem;
+    display: flex;
+    flex-direction: column;
+}
+.about-user-list p{
+    margin: 0;
+}
+.location-user{
+    font-weight: bold;
+    color: #6a737c;
+}
+.user-tag > a{
+    color: #848d95;
+}
+.user-tag > a:hover{
+    color: #6a737c;
+    text-decoration: underline;
+}
+/*tags-list*/
+.tags-list{
     display: flex;
     flex-direction: row;
     justify-content: space-around;
+    flex-wrap: wrap;
 }
-.user{
+.tags-list .tag {
+    font-size: 1.5rem;
+    color: #848d95;
+}
+.tag{
+    height: 50px;
+    margin: 0;
+}
+.tag a{
+    font-size: 1.5rem;
+    background-color: #E1ECF4;
+    margin-right: 2px;
+    padding: .2rem .6rem;
+    color: #39739d;
+}
+/*question-detail*/
+.title-detail{
+    font-size: 2rem;
+    border: none;
+}
+.tags{
+    float: left;
+    width: 80%;
+    height: 50px;
+    margin: 0;
+}
+.user-detail-question{
+    background-color: #c6e5ef;
+}
+.text-question-detail{
+    float: left;
+    width: 90%;
+}
+.answer-list h2{
+    align-items: center;
+}
+.answer-count{
+    font-size: 1.8rem;
+    color: #666666;
+}
+.answer-list{
     display: flex;
-    flex-direction: row;
+    margin: 2rem;
+    flex-direction: column;
+    justify-content: center;
 }
-.image-user-list{
-    width: 5rem;
-    height: 5rem;
+.answer{
+    font-size: 1.6rem;
+    border-bottom: 1px solid #cccccc;
+}
+.add-comment{
+    color: #5c7da7;
+    font-size: 1.4rem;
+}
+.add-comment:hover {
+    color: #1250c0;
+}
+.need-login{
+    margin-bottom: 2rem;
+}
+.center-answer{
+    text-align: center;
+}
+.date-comment{
+    font-size: 1rem;
+}
+.comment-list{
+    width: 75%;
+    margin-left: 25%;
+    margin-bottom: 2rem;
+}
+.comment{
+    border-bottom: 1px solid #cccccc;
+    font-size: 1.4rem;
+}
+.comment:nth-child(1){
+    border-top: 1px solid #cccccc;
+}
+
+.comment-list .comment:nth-child(n+4) {
+    display: none;
+}
+
+.comment-list.open .comment:nth-child(n+4) {
+    display: block;
+}
+.list-toggle{
+    margin-bottom: 1rem;
+    color: #5c7da7;
+    font-size: 1.4rem;
+}
+.list-toggle:hover {
+    color: #1250c0;
+}
+/*checkbox https://codepen.io/daniandl/pen/OgbXzK*/
+.label__checkbox {
+  display: none;
+}
+.label__check {
+    margin-top: 2rem;
+    border-radius: 50%;
+    border: 5px solid rgba(0, 0, 0, .2);
+    background: white;
+    vertical-align: middle;
+    width: 2em;
+    height: 2em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border .3s ease;
+}
+i.icon {
+    opacity: 0.2;
+    font-size: 2rem;
+    color: transparent;
+    transition: opacity .3s .1s ease;
+    -webkit-text-stroke: 3px rgba(0, 0, 0, 1);
+}
+.label__check:hover {
+    border: 5px solid rgba(0,0,0,0.3);
+}
+.label__checkbox:checked + .label__text .label__check {
+  animation: check .5s cubic-bezier(0.895, 0.030, 0.685, 0.220) forwards;
+}
+.label__checkbox:checked +.label__text .label__check .icon {
+    opacity: 1;
+    transform: scale(0);
+    color: white;
+    animation: icon .3s cubic-bezier(1.000, 0.008, 0.565, 1.650) .1s 1 forwards;
+    -webkit-text-stroke: 3px rgba(255, 255, 255, 0.5);
+}
+@keyframes icon {
+  from {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1)
+  }
+}
+@keyframes check {
+  0% {
+    width: 1.5em;
+    height: 1.5em;
+    border-width: 5px;
+  }
+  10% {
+    width: 1.5em;
+    height: 1.5em;
+    opacity: 0.1;
+    background: rgba(0,0,0,0.2);
+    border-width: 15px;
+  }
+  12% {
+    width: 1.5em;
+    height: 1.5em;
+    opacity: 0.4;
+    background: rgba(0,0,0,0.1);
+    border-width: 0;
+  }
+  50% {
+    width: 2em;
+    height: 2em;
+    background: #00d478;
+    border: 0;
+    opacity: 0.6;
+  }
+  100% {
+    width: 2em;
+    height: 2em;
+    background: #00d478;
+    border: 0;
+    opacity: 1;
+  }
 }
