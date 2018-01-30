@@ -3,11 +3,16 @@
 {% block title %}Tags{% endblock %}
 
 {% block content %}
-    {% for tag in tag_list %}
-        <p>{{ tag.name }}</p>
-        <p>{{ tag.taggit_taggeditem_items.count }}</p>
-    {% endfor %}
-        {% if page_obj %}
-            {% include "pagination.html" with page=page_obj %}
-        {% endif %}
+    <div class="tags-list">
+        {% for tag in tag_list %}
+            <div class="tag">
+                <a href="{% url "question:tag_detail" tag.slug %}">
+                    {{ tag.name }}
+                </a> x {{ tag.taggit_taggeditem_items.count }}
+            </div>
+        {% endfor %}
+    </div>
+    {% if page_obj %}
+        {% include "pagination.html" with page=page_obj %}
+    {% endif %}
 {% endblock %}

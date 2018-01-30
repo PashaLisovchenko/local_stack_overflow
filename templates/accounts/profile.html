@@ -65,8 +65,9 @@
     <h2>Question({{ user.questions.count }})</h2>
     {% for user_question in user_question_list %}
         <p>
-            <span class="profile_likes">{{ user_question.users_like.count }}</span>
-            <a href="#">{{ user_question.title }}</a>
+            <span class="profile_likes{% for answer in user_question.answers.all %}{% if answer.is_correct %} correct{% endif %}{% endfor %}">
+                {{ user_question.users_like.count }}</span>
+            <a href="{{ user_question.get_absolute_url }}">{{ user_question.title }}</a>
         </p>
     {% endfor %}
 </div>
@@ -74,8 +75,9 @@
     <h2>Answer({{ user.answer.count }})</h2>
     {% for user_answer in user_answer_list %}
         <p>
-            <span class="profile_likes">{{ user_answer.users_like.count }}</span>
-            <a href="#">{{ user_answer.question.title }}</a>
+            <span class="profile_likes{% if user_answer.is_correct %} correct{% endif %}">
+                {{ user_answer.users_like.count }}</span>
+            <a href="{{ user_answer.question.get_absolute_url }}">{{ user_answer.question.title }}</a>
         </p>
     {% endfor %}
 </div>

@@ -3,18 +3,42 @@
 {% block title %}tagged with "{{ tag.name }}"{% endblock %}
 
 {% block content %}
-    <h2>Questions tagged with "{{ tag.name }}" <a class="ask-question-btn" href="#">Ask Question</a></h2>
+    {% if request.user.is_authenticated %}
+    <h2 class="title-detail">
+        Questions tagged with "{{ tag.name }}"
+        <a class="ask-question-btn" href="{% url "question:add_question" %}">Ask Question</a>
+    </h2>
+        {% else %}
+        <h2 class="need-login">Want ask question? Your need <a href="{% url "accounts:login" %}">Login</a></h2>
+        <h2 class="title-detail">
+            Questions tagged with "{{ tag.name }}"
+        </h2>
+    {% endif %}
     <div class="questions_list">
     {% for question in questions %}
         <div class="question">
             <div class="statistic-question">
-                <p>{{ question.users_like.count }}</p>
-                <span>Votes</span>
-                <p>{{ question.answers.count }}</p>
-                <span>Answers</span>
+                <div class="votes-stat">
+                    <p>{{ question.users_like.count }}</p>
+                    <span>Votes</span>
+                </div>
+                <div class="answers-stat
+                {% for answer in question.answers.all %}
+                    {% if answer.is_correct %}
+                        green-answer
+                    {% endif %}
+                {% endfor %}
+                ">
+                    <p>{{ question.answers.count }}</p>
+                    <span>Answers</span>
+                </div>
+{#                <div class="answers-stat">#}
+{#                    <p>{{ question.answers.count }}</p>#}
+{#                    <span>Answers</span>#}
+{#                </div>#}
             </div>
             <div class="text-question">
-                <p><a class="orange-link" href="#">{{ question.title }}</a></p>
+                <p><a class="orange-link" href="{{ question.get_absolute_url }}">{{ question.title }}</a></p>
                 <p>{{ question.text_question|truncatechars:300}}</p>
                 <p class="tags">
                     {% for tag in question.tags.all %}

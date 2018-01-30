@@ -3,24 +3,25 @@
 {% block title %}Users{% endblock %}
 
 {% block content %}
+    <form>
+        <p><input class="search-query span10" type="text" name="suggestion" value="" id="suggestion" /></p>
+    </form>
     <div class="user-list">
-        {% for user in user_list %}
+       {% for user in user_list %}
             <div class="user">
                 <img class="image-user-list" src="{{ user.profile.image.url }}" alt="">
-                <p>{{ user.username }}</p>
-                <p>{{ user.profile.location }}</p>
-                {% for questions in user.questions.all %}
-                    {% for tags in questions.tags.all %}
-                        {{ tags }}
-                    {% endfor %}
-
-{#                    <a href="{% url "blog:post_list_by_tag" tag.slug %}">#}
-{#                    {{ tag.name }}#}
-{#                    </a>#}
-                    {% if not forloop.last %}, {% endif %}
-                {% endfor %}
+                <div class="about-user-list">
+                    <p class="name-user"><a href="{{ user.profile.get_absolute_url }}">{{ user.username }}</a></p>
+                    <p class="location-user">{{ user.profile.location }}</p>
+                    <p class="user-tag">
+                        {% for tag in user.profile.get_best_tags %}
+                            <a href="{% url "question:tag_detail" tag.slug %}">{{ tag.name }}</a>
+                            {% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </p>
+                </div>
             </div>
-        {% endfor %}
+       {% endfor %}
     </div>
     {% if page_obj %}
         {% include "pagination.html" with page=page_obj %}
