@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
 {% block title %}Questions{% endblock %}
-
 {% block content %}
     {% if request.user.is_authenticated %}
     <h1 class="title-detail">
@@ -17,8 +16,15 @@
     <div class="questions_list">
         <div class="question">
             <div class="statistic-question">
-                <p>{{ question.users_like.count }}</p>
-                <span>Votes</span>
+                <p class="tl-question">{{ question.users_like.count }}</p>
+                <a href="#" data-model-name="question" data-id="{{ question.id }}" data-action="{% if request.user in question.users_like.all %}un{% endif %}like"
+                    class="like-question">
+                    {% if request.user not in question.users_like.all %}
+                        Like
+                    {% else %}
+                        Unlike
+                    {% endif %}
+                </a>
             </div>
             <div class="text-question-detail">
                 <p>{{ question.text_question }}</p>
@@ -50,16 +56,14 @@
                         </div>
                     {% endfor %}
                     <a class="list-toggle" id="q-list-toggle">show more comments</a>
+                    <div class="add-comment-form" id="q-comment_form">
+                        <form action="{% url "question:comment-add-question" id=question.id %}" method="POST">
+                            {% csrf_token %}
+                            <p>{{ form_comment.comment }}</p>
+                            <p><input type="submit" value="Post Your Comment"></p>
+                        </form>
+                    </div>
                 </div>
-            </div>
-
-            <div class="add-comment-form" id="q-comment_form">
-                <form action="{% url "question:comment-add-question" id=question.id %}" method="POST">
-                    {% csrf_token %}
-                    <label>Add comment</label>
-                    <p>{{ form_comment.comment }}</p>
-                    <p><input type="submit" value="Post Your Comment"></p>
-                </form>
             </div>
             {% if question.answers.count > 0 %}
                 <h3 class="answer-count">{{ question.answers.count }} Answers</h3>
@@ -71,8 +75,15 @@
         {% for answer in question.answers.all %}
         <div class="answer">
             <div class="statistic-question">
-                <p>{{ answer.users_like.count }}</p>
-                <span>Votes</span>
+                <p class="tl-answer-{{ answer.id }}">{{ answer.users_like.count }}</p>
+                <a href="#" data-id="{{ answer.id }}" data-action="{% if request.user in answer.users_like.all %}un{% endif %}like"
+                    class="like-answer-{{ answer.id }}">
+                    {% if request.user not in answer.users_like.all %}
+                        Like
+                    {% else %}
+                        Unlike
+                    {% endif %}
+                </a>
                 {% if request.user == question.user or answer.is_correct %}
                     <label class="label">
                         <input  class="label__checkbox" type="checkbox" id="correct-answer" data-id="{{ answer.id }}"
@@ -116,15 +127,14 @@
                         {% endif %}
                     {% endfor %}
                     <a class="list-toggle" id="a-list-toggle-{{ answer.id }}" data-id="{{ answer.id }}">show more comments</a>
+                    <div class="add-comment-form" id="comment_form-{{ answer.id }}">
+                        <form action="{% url "question:comment-add-answer" id=answer.id %}" method="POST">
+                            {% csrf_token %}
+                            <p>{{ form_comment.comment }}</p>
+                            <p><input type="submit" value="Post Your Comment"></p>
+                        </form>
+                    </div>
                 </div>
-            </div>
-            <div class="add-comment-form" id="comment_form-{{ answer.id }}">
-                <form action="{% url "question:comment-add-answer" id=answer.id %}" method="POST">
-                    {% csrf_token %}
-                    <label>Add comment</label>
-                    <p>{{ form_comment.comment }}</p>
-                    <p><input type="submit" value="Post Your Comment"></p>
-                </form>
             </div>
         </div>
         {% endfor %}
@@ -143,4 +153,5 @@
         {% else %}
         <h2 class="need-login center-answer">Want to answer? Your need <a href="{% url "accounts:login" %}">Login</a></h2>
     {% endif %}
+    {% include "questionnaire/similar_post.html" with similar_question=similar_question %}
 {% endblock %}
