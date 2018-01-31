@@ -22,6 +22,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^', include('questionnaire.urls', namespace='question')),
     url(r'^users/', include('accounts.urls', namespace='accounts')),
+    url(r'^markdownx/', include('markdownx.urls')),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
