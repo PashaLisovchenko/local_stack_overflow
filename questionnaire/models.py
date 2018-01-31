@@ -33,7 +33,7 @@ class Question(models.Model):
 
 
 class Answer(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='answer') # неуверен что нужен on_delete
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='answer')  # I'm not sure what need on_delete
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='answers')
     text_answer = models.TextField(max_length=500)
     is_correct = models.BooleanField(default=False)
