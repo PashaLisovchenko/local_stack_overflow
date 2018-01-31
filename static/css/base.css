@@ -144,6 +144,17 @@ header .login-btn:hover{
     padding: .6rem 1.2rem;
 }
 /*forms-account*/
+.markdownx{
+    display: block;
+}
+.add_question{
+    width: 100rem;
+    padding: 1rem;
+    margin: auto;
+}
+form.add_question .markdownx-preview{
+    width: 100%;
+}
 form {
     width: 40rem;
     padding: 1rem;
@@ -168,7 +179,7 @@ form p input {
     color: #464646;
     border-radius:.4rem;
 }
-form p textarea {
+form textarea {
     min-width: 100%;
     max-width: 100%;
     width:100%;
@@ -283,6 +294,7 @@ input[type=submit], a.button {
 }
 /*question list*/
 .questions_list{
+    width: 80%;
     display: flex;
     margin: 2rem;
     flex-direction: column;
@@ -362,6 +374,22 @@ input[type=submit], a.button {
     background-color: #cee0ed;
     padding: .2rem .6rem;
     color: #39739d
+}
+.slidebar{
+    display: block;
+    float: right;
+    width: 20%;
+    position: absolute;
+    right: 0;
+    top: 120px;
+    font-size: 1.3rem;
+    background-color: #f2f2f2;
+    padding: 10px;
+    margin-right: 1rem;
+}
+li.tags{
+    list-style: none;
+    height: 3rem;
 }
 /*pagination html*/
 .pagination{
@@ -463,6 +491,7 @@ input[type=submit], a.button {
     color: #666666;
 }
 .answer-list{
+    width: 80%;
     display: flex;
     margin: 2rem;
     flex-direction: column;
