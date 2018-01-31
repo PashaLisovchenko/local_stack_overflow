@@ -44,6 +44,9 @@ INSTALLED_APPS = [
     'accounts',
     'questionnaire',
     'taggit',
+    'taggit_serializer',
+    'markdownx',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -128,6 +131,9 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
   os.path.join(BASE_DIR, "static"),
 )
+# STATIC_ROOT = os.path.join(
+#     BASE_DIR, "static"
+# )
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(
