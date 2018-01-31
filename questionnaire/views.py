@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.http import JsonResponse
@@ -6,7 +7,8 @@ from django.urls import reverse_lazy
 from django.utils.text import slugify
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import FormMixin, FormView, CreateView
-
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
 from questionnaire.forms import AnswerForm, CommentForm, AddQuestion
 from .models import Question, Answer, Comment
 from taggit.models import Tag
@@ -192,3 +194,29 @@ def current_answer(request):
         'is_correct': answer.is_correct
     }
     return JsonResponse(data)
+
+
+@login_required
+@require_POST
+def user_like(request):
+    model_name = request.POST.get('model_name')
+    id = request.POST.get('id')
+    action = request.POST.get('action')
+    if id and action:
+        try:
+            if model_name == 'question':
+                question = Question.objects.get(id=id)
+                if action == 'like':
+                    question.users_like.add(request.user)
+                else:
+                    question.users_like.remove(request.user)
+            else:
+                answer = Answer.objects.get(id=id)
+                if action == 'like':
+                    answer.users_like.add(request.user)
+                else:
+                    answer.users_like.remove(request.user)
+            return JsonResponse({'status': 'ok', 'id': id})
+        except:
+            pass
+            return JsonResponse({'status': 'ko'})

@@ -1,6 +1,6 @@
 from django.conf.urls import url
 from .views import QuestionList, TagList, UserList, QuestionListByTag, QuestionDetail, current_answer,CommentAddAnswer,\
-    CommentAddQuestion, AddQuestionView
+    CommentAddQuestion, AddQuestionView, user_like
 
 urlpatterns = [
     url(r'^$', QuestionList.as_view(), name="home_page"),
@@ -15,5 +15,6 @@ urlpatterns = [
     url(r'^add-comment-question/(?P<id>\d+)/$', CommentAddQuestion.as_view(), name="comment-add-question"),
 
     url(r'^ajax/correct-answer/$', current_answer, name='correct_answer'),
+    url(r'^ajax/like/$', user_like, name='user_like'),
     # url(r'^ajax/user/$', suggest_users, name='find_user'),
 ]
