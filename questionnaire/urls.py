@@ -1,6 +1,17 @@
-from django.conf.urls import url
+from django.conf.urls import url, include
+from rest_framework.routers import DefaultRouter
 from .views import QuestionList, TagList, UserList, QuestionListByTag, QuestionDetail, current_answer,CommentAddAnswer,\
     CommentAddQuestion, AddQuestionView, user_like
+from .api_views import QuestionViewSet, AnswerViewSet, TagViewSet, CommentViewSet, ProfileViewSet, UserViewSet
+
+
+router = DefaultRouter()
+router.register(r'question', QuestionViewSet)
+router.register(r'answer', AnswerViewSet)
+router.register(r'tag', TagViewSet)
+router.register(r'comment', CommentViewSet)
+router.register(r'profile', ProfileViewSet)
+router.register(r'user', UserViewSet)
 
 urlpatterns = [
     url(r'^$', QuestionList.as_view(), name="home_page"),
@@ -17,4 +28,5 @@ urlpatterns = [
     url(r'^ajax/correct-answer/$', current_answer, name='correct_answer'),
     url(r'^ajax/like/$', user_like, name='user_like'),
     # url(r'^ajax/user/$', suggest_users, name='find_user'),
+    url(r'api/', include(router.urls)),
 ]

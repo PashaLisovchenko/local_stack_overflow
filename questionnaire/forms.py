@@ -1,4 +1,6 @@
 from django.forms import ModelForm
+from markdownx.fields import MarkdownxFormField
+
 from questionnaire.models import Answer, Comment, Question
 
 
@@ -17,6 +19,7 @@ class CommentForm(ModelForm):
 
 
 class AddQuestion(ModelForm):
+    text_question = MarkdownxFormField()
 
     class Meta:
         model = Question

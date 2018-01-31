@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
+from django.db.models import Count
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
@@ -88,7 +89,10 @@ class QuestionDetail(FormMixin, DetailView):
             content_type__pk=content_type.pk,
             object_id__in=answers_id
         )
-
+        question_tags_ids = question.tags.values_list('id', flat=True)
+        similar_question = Question.objects.filter(tags__in=question_tags_ids).exclude(id=question.id)
+        similar_question = similar_question.annotate(same_tags=Count('tags')).order_by('-same_tags')[:5]
+        context['similar_question'] = similar_question
         context['question_comment_list'] = question_comment_list
         context['answers_comment_list'] = answers_comment_list
         return context

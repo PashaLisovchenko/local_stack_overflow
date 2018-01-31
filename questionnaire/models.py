@@ -31,6 +31,9 @@ class Question(models.Model):
     def get_absolute_url(self):
         return reverse('question:question_detail', args=[self.id, self.slug])
 
+    def get_tags_display(self):
+        return self.tags.values_list('name', flat=True)
+
 
 class Answer(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='answer')  # I'm not sure what need on_delete
