@@ -43,6 +43,7 @@ $(document).ready(function(){
                 $('.statistic-question .tl-question').text(previous_action == 'like' ? previous_likes + 1 : previous_likes - 1);
             }
         });
+        return false;
     });
 });
 $(document).ready(function(){
@@ -69,5 +70,6 @@ $(document).ready(function(){
                 $('.tl-answer-'+data['id']).text(previous_action == 'like' ? previous_likes + 1 : previous_likes - 1);
             }
         });
+        return false;
     });
 });
