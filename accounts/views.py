@@ -1,9 +1,12 @@
 from django.conf import settings
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
+from django.shortcuts import render_to_response
 from django.urls import reverse_lazy
 from django.views.generic import FormView, View, CreateView, DetailView, UpdateView
+from kombu.utils import json
+
 from questionnaire.models import Question, Answer
 from .forms import RegisterForm, UpdateProfileForm
 from .models import User, Profile
@@ -116,3 +119,9 @@ class UpdateProfile(UpdateView):
     def get_success_url(self, **kwargs):
         user = self.get_object()
         return reverse_lazy('accounts:profile', kwargs={'id': user.id})
+
+
+def search_user(request):
+    search_value = request.GET.get('suggestion', None)
+    users = User.objects.filter(username__contains=search_value)
+    return render_to_response('accounts/users_find.html', {'user_list': users} )

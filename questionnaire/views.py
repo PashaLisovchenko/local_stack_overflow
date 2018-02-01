@@ -2,12 +2,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Count
-from django.http import JsonResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect, render_to_response
 from django.urls import reverse_lazy
 from django.utils.text import slugify
 from django.views.generic import ListView, DetailView
-from django.views.generic.edit import FormMixin, FormView, CreateView
+from django.views.generic.edit import FormMixin, CreateView
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from questionnaire.forms import AnswerForm, CommentForm, AddQuestion
@@ -105,11 +104,11 @@ class QuestionDetail(FormMixin, DetailView):
             return self.form_invalid(form)
 
     def form_valid(self, form):
-        object = self.get_object()
+        question = self.get_object()
         user = self.request.user
         text_answer = self.request.POST.get("text_answer")
-        Answer.objects.create(user=user, question=object, text_answer=text_answer)
-        return redirect(object)
+        Answer.objects.create(user=user, question=question, text_answer=text_answer)
+        return redirect(question)
 
 
 class CommentAddAnswer(DetailView, FormMixin):
@@ -125,19 +124,19 @@ class CommentAddAnswer(DetailView, FormMixin):
             return self.form_invalid(form)
 
     def form_valid(self, form):
-        object = self.get_object()
+        answer = self.get_object()
         user = self.request.user
         text_comment = self.request.POST.get('comment')
-        content_type = ContentType.objects.get_for_model(object)
+        content_type = ContentType.objects.get_for_model(answer)
         print(content_type)
         new_comment = Comment.objects.create(
             content_type=content_type,
-            object_id=object.pk,
+            object_id=answer.pk,
             user=user,
             comment=text_comment
         )
         new_comment.save()
-        return redirect(object.question)
+        return redirect(answer.question)
 
 
 class CommentAddQuestion(DetailView, FormMixin):
@@ -153,19 +152,19 @@ class CommentAddQuestion(DetailView, FormMixin):
             return self.form_invalid(form)
 
     def form_valid(self, form):
-        object = self.get_object()
+        question = self.get_object()
         user = self.request.user
         text_comment = self.request.POST.get('comment')
-        content_type = ContentType.objects.get_for_model(object)
+        content_type = ContentType.objects.get_for_model(question)
         print(content_type)
         new_comment = Comment.objects.create(
             content_type=content_type,
-            object_id=object.pk,
+            object_id=question.pk,
             user=user,
             comment=text_comment
         )
         new_comment.save()
-        return redirect(object)
+        return redirect(question)
 
 
 class AddQuestionView(CreateView):
@@ -182,7 +181,7 @@ class AddQuestionView(CreateView):
         question.save()
         for tag in tags:
             question.tags.add(tag)
-        return redirect(reverse_lazy('question:question_detail', kwargs={'id':question.id, 'slug': question.slug}))
+        return redirect(reverse_lazy('question:question_detail', kwargs={'id': question.id, 'slug': question.slug}))
 
 
 def current_answer(request):
@@ -204,23 +203,25 @@ def current_answer(request):
 @require_POST
 def user_like(request):
     model_name = request.POST.get('model_name')
-    id = request.POST.get('id')
+    id_object = request.POST.get('id')
     action = request.POST.get('action')
-    if id and action:
-        try:
-            if model_name == 'question':
-                question = Question.objects.get(id=id)
-                if action == 'like':
-                    question.users_like.add(request.user)
-                else:
-                    question.users_like.remove(request.user)
+    if id_object and action:
+        if model_name == 'question':
+            question = Question.objects.get(id=id_object)
+            if action == 'like':
+                question.users_like.add(request.user)
             else:
-                answer = Answer.objects.get(id=id)
-                if action == 'like':
-                    answer.users_like.add(request.user)
-                else:
-                    answer.users_like.remove(request.user)
-            return JsonResponse({'status': 'ok', 'id': id})
-        except:
-            pass
-            return JsonResponse({'status': 'ko'})
+                question.users_like.remove(request.user)
+        else:
+            answer = Answer.objects.get(id=id_object)
+            if action == 'like':
+                answer.users_like.add(request.user)
+            else:
+                answer.users_like.remove(request.user)
+        return JsonResponse({'status': 'ok', 'id': id_object})
+
+
+def search_tag(request):
+    search_value = request.GET.get('suggestion', None)
+    tags = Tag.objects.filter(name__contains=search_value)
+    return render_to_response('questionnaire/tag_find.html', {'tag_list': tags})
