@@ -155,6 +155,12 @@ header .login-btn:hover{
 form.add_question .markdownx-preview{
     width: 100%;
 }
+/*.add_answer{*/
+    /*width: 100rem;*/
+    /*padding: 1rem;*/
+    /*!*margin: auto;*!*/
+/*}*/
+
 form {
     width: 40rem;
     padding: 1rem;

@@ -138,20 +138,19 @@
             </div>
         </div>
         {% endfor %}
-    </div>
-
-    {% if request.user.is_authenticated %}
-        {% if request.user != question.user %}
-            <form action="" method="POST">{% csrf_token %}
-                <h2>Your Answer</h2>
-                {% for field in form %}
-                    <p>{{ field }}</p>
-                {% endfor %}
-                <p><input type="submit" value="Post Your Answer"></p>
-            </form>
+        {% if request.user.is_authenticated %}
+            {% if request.user != question.user %}
+                <form class="add_question" action="" method="POST">{% csrf_token %}
+                    <h2>Your Answer</h2>
+                    {% for field in form %}
+                        <p>{{ field }}</p>
+                    {% endfor %}
+                    <p><input type="submit" value="Post Your Answer"></p>
+                </form>
+            {% endif %}
+            {% else %}
+            <h2 class="need-login center-answer">Want to answer? Your need <a href="{% url "accounts:login" %}">Login</a></h2>
         {% endif %}
-        {% else %}
-        <h2 class="need-login center-answer">Want to answer? Your need <a href="{% url "accounts:login" %}">Login</a></h2>
-    {% endif %}
+    </div>
     {% include "questionnaire/similar_post.html" with similar_question=similar_question %}
 {% endblock %}
