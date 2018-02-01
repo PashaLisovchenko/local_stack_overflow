@@ -86,8 +86,14 @@ WSGI_APPLICATION = 'local_stack_overflow.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        # 'ENGINE': 'django.db.backends.sqlite3',
+        # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'db_local_stack_overflow',
+        'USER' : 'pasha',
+        'PASSWORD' : '***',
+        'HOST' : '127.0.0.1',
+        'PORT' : '5432',
     }
 }
 
@@ -152,6 +158,6 @@ CELERY_RESULT_BACKEND = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'lisovchenko.pasha@gmail.com'
-EMAIL_HOST_PASSWORD = 'qwerty123xaxa'
+EMAIL_HOST_PASSWORD = '***'
 EMAIL_PORT = 587
 # celery worker -A local_stack_overflow --loglevel=debug --concurrency=4
