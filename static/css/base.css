@@ -399,16 +399,23 @@ li.tags{
     text-align: center;
 }
 /*user-list*/
-.user-list{
+.user-list-search{
+    width: 100%;
     padding: 0 10rem;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    flex-wrap: wrap;
+    display: inline-block;
+}
+.container{
+    width: 100%;
+    margin: 2rem auto;
+}
+.user-list{
+    width: 100%;
+    padding: 0 10rem;
+    display: inline-block;
 }
 .user{
     padding: 2rem 1rem;
-    width: 250px;
+    width: 24%;
     display: inline-flex;
     margin-bottom: 4rem;
 }
@@ -445,19 +452,34 @@ li.tags{
     text-decoration: underline;
 }
 /*tags-list*/
-.tags-list{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    flex-wrap: wrap;
+.tags-list-search{
+    width: 100%;
+    padding: 0 10rem;
+    display: inline-block;
 }
-.tags-list .tag {
+span.tag_info{
+    font-size: 1.2rem;
+    margin-left: 1rem;
+}
+.tag_info{
     font-size: 1.5rem;
-    color: #848d95;
+    color: #6a737c;
 }
-.tag{
-    height: 50px;
-    margin: 0;
+.tag_info-main{
+    font-size: 1rem;
+    color: #7e87ad;
+}
+.tags-list{
+    width: 100%;
+    padding: 0 10rem;
+    display: inline-block;
+}
+.tags-list .tag, .tags-list-search .tag {
+    vertical-align: top;
+    padding: 2rem 1rem;
+    width: 24%;
+    display: inline-block;
+    margin-bottom: 4rem;
 }
 .tag a{
     font-size: 1.5rem;
