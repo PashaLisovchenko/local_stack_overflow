@@ -1,0 +1,11 @@
+<div class="tags-list-search">
+    {% for tag in tag_list %}
+        <div class="tag">
+            <a href="{% url "question:tag_detail" tag.slug %}">
+                {{ tag.name }}
+            </a>
+            <span class="tag_info"> x {{ tag.taggit_taggeditem_items.count }}</span>
+            <p class="tag_info-main">{{ tag.description.description }}</p>
+        </div>
+    {% endfor %}
+</div>
