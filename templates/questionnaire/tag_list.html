@@ -3,14 +3,26 @@
 {% block title %}Tags{% endblock %}
 
 {% block content %}
-    <div class="tags-list">
-        {% for tag in tag_list %}
-            <div class="tag">
-                <a href="{% url "question:tag_detail" tag.slug %}">
-                    {{ tag.name }}
-                </a> x {{ tag.taggit_taggeditem_items.count }}
-            </div>
-        {% endfor %}
+    <h1>Tags</h1>
+    <p class="tag_info">A tag is a keyword or label that categorizes your question with other, similar questions. Using the right tags makes it easier for others to find and answer your question. </p>
+    <form>
+        <p><input class="search-query span10" type="text" name="suggestion" value="" id="suggestion" data-target="tag" placeholder="Find tag"/></p>
+    </form>
+    <div class="container">
+        <div class="tags-list">
+            {% for tag in tag_list %}
+                <div class="tag">
+                    <a href="{% url "question:tag_detail" tag.slug %}">
+                        {{ tag.name }}
+                    </a>
+                    <span class="tag_info"> x {{ tag.taggit_taggeditem_items.count }}</span>
+                    <p class="tag_info-main">{{ tag.description.description }}</p>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="search_result">
+
+        </div>
     </div>
     {% if page_obj %}
         {% include "pagination.html" with page=page_obj %}

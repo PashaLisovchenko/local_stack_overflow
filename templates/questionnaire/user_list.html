@@ -3,25 +3,31 @@
 {% block title %}Users{% endblock %}
 
 {% block content %}
-{#    <form>#}
-{#        <p><input class="search-query span10" type="text" name="suggestion" value="" id="suggestion" /></p>#}
-{#    </form>#}
-    <div class="user-list">
-       {% for user in user_list %}
-            <div class="user">
-                <img class="image-user-list" src="{{ user.profile.image.url }}" alt="">
-                <div class="about-user-list">
-                    <p class="name-user"><a href="{{ user.profile.get_absolute_url }}">{{ user.username }}</a></p>
-                    <p class="location-user">{{ user.profile.location }}</p>
-                    <p class="user-tag">
-                        {% for tag in user.profile.get_best_tags %}
-                            <a href="{% url "question:tag_detail" tag.slug %}">{{ tag.name }}</a>
-                            {% if not forloop.last %}, {% endif %}
-                        {% endfor %}
-                    </p>
+    <h1>Users</h1>
+    <form>
+        <p><input class="search-query span10" type="text" name="suggestion" value="" data-target="user" id="suggestion" placeholder="Find user"/></p>
+    </form>
+    <div class="container">
+        <div class="user-list">
+           {% for user in user_list %}
+                <div class="user">
+                    <img class="image-user-list" src="{{ user.profile.image.url }}" alt="">
+                    <div class="about-user-list">
+                        <p class="name-user"><a href="{{ user.profile.get_absolute_url }}">{{ user.username }}</a></p>
+                        <p class="location-user">{{ user.profile.location }}</p>
+                        <p class="user-tag">
+                            {% for tag in user.profile.get_best_tags %}
+                                <a href="{% url "question:tag_detail" tag.slug %}">{{ tag.name }}</a>
+                                {% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </p>
+                    </div>
                 </div>
-            </div>
-       {% endfor %}
+           {% endfor %}
+        </div>
+        <div class="search_result">
+
+        </div>
     </div>
     {% if page_obj %}
         {% include "pagination.html" with page=page_obj %}
