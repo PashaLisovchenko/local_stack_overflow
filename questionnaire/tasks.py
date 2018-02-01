@@ -1,5 +1,7 @@
-from celery import shared_task
-from .models import Answer
+from taggit.models import Tag
+import urllib.request
+from lxml.html import fromstring
+from .models import Answer, DescriptionTag
 from django.core.mail import send_mail
 from local_stack_overflow.celery import app
 
@@ -18,3 +20,18 @@ def send_message(answer_id):
 
     send_mail(subject, message, email_from, [email_to])
     print('send email')
+
+
+@app.task
+def parse_stack(tag_id):
+    tag = Tag.objects.get(id=tag_id)
+    page_url = 'https://stackoverflow.com/tags/' + tag.slug + '/info'
+    response = urllib.request.urlopen(page_url).read()
+    page = fromstring(response)
+    description_tag = page.xpath('//div[@class="post-text"]/div[@class="welovestackoverflow"]/p')
+    description_tag = description_tag[0].text.strip()
+    descr_tag = DescriptionTag.objects.get(tag=tag)
+    descr_tag.description = description_tag
+    descr_tag.save()
+    print(tag)
+    print('description_tag saved')

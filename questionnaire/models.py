@@ -2,13 +2,17 @@ import datetime
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.db import models
 from django.db.models import signals
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 from django.contrib.auth.models import User
 from markdownx.utils import markdownify
 from taggit.managers import TaggableManager
 from django.core.urlresolvers import reverse
 from django.contrib.contenttypes.models import ContentType
+from taggit.models import Tag
+
+
+class DescriptionTag(models.Model):
+    tag = models.OneToOneField(Tag, related_name='description')
+    description = models.TextField()
 
 
 class Question(models.Model):
@@ -78,3 +82,14 @@ class Comment(models.Model):
 
     class Meta:
         ordering = ('added_at',)
+
+
+def parse_stack_description_tag(sender, instance, signal, *args, **kwargs):
+    from .tasks import parse_stack
+    DescriptionTag.objects.get_or_create(tag=instance)
+    if not instance.description.description:
+        parse_stack.delay(instance.pk)
+
+
+signals.post_save.connect(parse_stack_description_tag, sender=Tag)
+

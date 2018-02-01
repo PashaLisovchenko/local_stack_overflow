@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Question, Answer, Comment
+from .models import Question, Answer, Comment, DescriptionTag
 
 
 class QuestionAdmin(admin.ModelAdmin):
@@ -22,3 +22,10 @@ class CommentAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Comment, CommentAdmin)
+
+
+class DescriptionTagAdmin(admin.ModelAdmin):
+    list_display = ['tag', 'description', ]
+
+
+admin.site.register(DescriptionTag, DescriptionTagAdmin)
