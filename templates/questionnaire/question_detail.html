@@ -56,13 +56,17 @@
                         </div>
                     {% endfor %}
                     <a class="list-toggle" id="q-list-toggle">show more comments</a>
-                    <div class="add-comment-form" id="q-comment_form">
+                </div>
+                <div class="add-comment-form" id="q-comment_form">
+                    {% if request.user.is_authenticated %}
                         <form action="{% url "question:comment-add-question" id=question.id %}" method="POST">
                             {% csrf_token %}
                             <p>{{ form_comment.comment }}</p>
                             <p><input type="submit" value="Post Your Comment"></p>
                         </form>
-                    </div>
+                        {% else %}
+                        <h5 class="need-login center-answer">Want to comment? Your need <a href="{% url "accounts:login" %}">Login</a></h5>
+                    {% endif %}
                 </div>
             </div>
             {% if question.answers.count > 0 %}
@@ -127,13 +131,17 @@
                         {% endif %}
                     {% endfor %}
                     <a class="list-toggle" id="a-list-toggle-{{ answer.id }}" data-id="{{ answer.id }}">show more comments</a>
-                    <div class="add-comment-form" id="comment_form-{{ answer.id }}">
+                </div>
+                <div class="add-comment-form" id="comment_form-{{ answer.id }}">
+                    {% if request.user.is_authenticated %}
                         <form action="{% url "question:comment-add-answer" id=answer.id %}" method="POST">
                             {% csrf_token %}
                             <p>{{ form_comment.comment }}</p>
                             <p><input type="submit" value="Post Your Comment"></p>
                         </form>
-                    </div>
+                        {% else %}
+                        <h5 class="need-login center-answer">Want to comment? Your need <a href="{% url "accounts:login" %}">Login</a></h5>
+                    {% endif %}
                 </div>
             </div>
         </div>
