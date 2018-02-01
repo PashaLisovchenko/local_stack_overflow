@@ -102,7 +102,8 @@ class UpdateProfile(UpdateView):
         req_file = request.FILES
         req_post = request.POST
         user_profile.bio = req_post['bio']
-        user_profile.birth_date = req_post['birth_date']
+        if req_post['birth_date']:
+            user_profile.birth_date = req_post['birth_date']
         user_profile.link_github = req_post['link_github']
         user_profile.location = req_post['location']
         if not req_file:
