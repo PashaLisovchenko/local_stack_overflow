@@ -22,7 +22,7 @@ def show_latest_question(count=5):
 def get_most_answer_question(count=5):
     return Question.objects.all().annotate(
         total_answer=Count('answers')
-    ).order_by('-total_answer')[:count]
+    ).filter(total_answer__gt=0).order_by('-total_answer')[:count]
 
 
 @register.assignment_tag
