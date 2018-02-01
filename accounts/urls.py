@@ -1,5 +1,5 @@
 from django.conf.urls import url
-from .views import LoginView, LogoutView, CreateUser, ProfileView, UpdateProfile
+from .views import LoginView, LogoutView, CreateUser, ProfileView, UpdateProfile, search_user
 
 urlpatterns = [
     url(r'^login/$', LoginView.as_view(), name="login"),
@@ -7,4 +7,6 @@ urlpatterns = [
     url(r'^logout/$', LogoutView.as_view(), name="logout"),
     url(r'^profile/(?P<id>\d+)$', ProfileView.as_view(), name="profile"),
     url(r'^(?P<id>\d+)/update_profile$', UpdateProfile.as_view(), name="update_profile"),
+
+    url(r'^ajax/user_search/$', search_user, name='search_user'),
 ]

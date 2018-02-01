@@ -1,7 +1,7 @@
 from django.conf.urls import url, include
 from rest_framework.routers import DefaultRouter
-from .views import QuestionList, TagList, UserList, QuestionListByTag, QuestionDetail, current_answer,CommentAddAnswer,\
-    CommentAddQuestion, AddQuestionView, user_like
+from .views import QuestionList, TagList, UserList, QuestionListByTag, QuestionDetail, current_answer, CommentAddAnswer, \
+    CommentAddQuestion, AddQuestionView, user_like, search_tag
 from .api_views import QuestionViewSet, AnswerViewSet, TagViewSet, CommentViewSet, ProfileViewSet, UserViewSet
 
 
@@ -27,6 +27,7 @@ urlpatterns = [
 
     url(r'^ajax/correct-answer/$', current_answer, name='correct_answer'),
     url(r'^ajax/like/$', user_like, name='user_like'),
-    # url(r'^ajax/user/$', suggest_users, name='find_user'),
+    url(r'^ajax/find-tags/$', search_tag, name='find_tags'),
+
     url(r'api/', include(router.urls)),
 ]
