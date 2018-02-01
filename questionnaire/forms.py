@@ -5,6 +5,7 @@ from questionnaire.models import Answer, Comment, Question
 
 
 class AnswerForm(ModelForm):
+    text_answer = MarkdownxFormField()
 
     class Meta:
         model = Answer
