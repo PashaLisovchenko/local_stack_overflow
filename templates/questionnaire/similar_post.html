@@ -1,0 +1,12 @@
+<div class="slidebar">
+    <h2>Related Question</h2>
+    <ul>
+    {% for question in similar_question %}
+        <li>
+            <a href="{{ question.get_absolute_url }}">{{ question.title }}</a>
+        </li>
+        {% empty %}
+        There are no similar question yet.
+    {% endfor %}
+    </ul>
+</div>

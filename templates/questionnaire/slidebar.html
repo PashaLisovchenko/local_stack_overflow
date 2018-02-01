@@ -1,0 +1,26 @@
+{% load my_tags %}
+<div class="slidebar">
+    <h1>{% total_question %}<sub> question</sub></h1>
+    <h3>Latest question</h3>
+    {% show_latest_question 3 %}
+    <h3>Most answer posts</h3>
+    {% get_most_answer_question as most_answer_question %}
+    <ul>
+    {% for question in most_answer_question %}
+        <li>
+            <a href="{{ question.get_absolute_url }}">{{ question.title }}</a>
+        </li>
+        {% empty %}
+        On questions don't have answers yet.
+    {% endfor %}
+    </ul>
+    <h3>Related Tags</h3>
+    {% get_most_taggit as related_tag %}
+    <ul>
+        {% for tag in related_tag %}
+                <li class="tags"><a href="{% url "question:tag_detail" tag.slug %}">{{ tag.name }}</a>x {{ tag.taggit_taggeditem_items.count }}</li>
+        {% empty %}
+        Not tags yet.
+        {% endfor %}
+    </ul>
+</div>
