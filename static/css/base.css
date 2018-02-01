@@ -155,11 +155,6 @@ header .login-btn:hover{
 form.add_question .markdownx-preview{
     width: 100%;
 }
-/*.add_answer{*/
-    /*width: 100rem;*/
-    /*padding: 1rem;*/
-    /*!*margin: auto;*!*/
-/*}*/
 
 form {
     width: 40rem;
@@ -475,6 +470,10 @@ li.tags{
 pre{
     background-color: #EFF0F1;
     padding: 1rem;
+}
+p code{
+    background-color: #EFF0F1;
+    padding: .2rem;
 }
 .title-detail{
     font-size: 2rem;
