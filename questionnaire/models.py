@@ -13,9 +13,9 @@ from django.contrib.contenttypes.models import ContentType
 
 class Question(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='questions')
-    title = models.CharField(max_length=60)
-    slug = models.SlugField(max_length=60, db_index=True)
-    text_question = models.TextField(max_length=500)
+    title = models.CharField(max_length=200)
+    slug = models.SlugField(max_length=200, db_index=True)
+    text_question = models.TextField()
     tags = TaggableManager()
     users_like = models.ManyToManyField(User, related_name='question_liked', blank=True)
     # dislike
@@ -43,7 +43,7 @@ class Question(models.Model):
 class Answer(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='answer')  # I'm not sure what need on_delete
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='answers')
-    text_answer = models.TextField(max_length=500)
+    text_answer = models.TextField()
     is_correct = models.BooleanField(default=False)
     users_like = models.ManyToManyField(User, related_name='answer_liked', blank=True)
     # dislike
