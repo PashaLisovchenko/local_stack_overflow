@@ -466,6 +466,10 @@ li.tags{
     color: #39739d;
 }
 /*question-detail*/
+pre{
+    background-color: #EFF0F1;
+    padding: 1rem;
+}
 .title-detail{
     font-size: 2rem;
     border: none;

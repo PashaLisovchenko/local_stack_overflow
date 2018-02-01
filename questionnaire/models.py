@@ -5,6 +5,7 @@ from django.db.models import signals
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth.models import User
+from markdownx.utils import markdownify
 from taggit.managers import TaggableManager
 from django.core.urlresolvers import reverse
 from django.contrib.contenttypes.models import ContentType
@@ -24,6 +25,10 @@ class Question(models.Model):
     class Meta:
         index_together = (('id', 'slug'),)
         ordering = ('-created', )
+
+    @property
+    def formatted_markdown(self):
+        return markdownify(self.text_question)
 
     def __str__(self):
         return self.user.username + ', ' + self.slug
@@ -48,6 +53,9 @@ class Answer(models.Model):
     def __str__(self):
         return self.user.username + ', ' + self.text_answer
 
+    @property
+    def formatted_markdown(self):
+        return markdownify(self.text_answer)
     # def get_absolute_url(self):
     #     return reverse('question:detail_question', args=[self.id, self.slug])
 

@@ -17,7 +17,7 @@
         <div class="question">
             <div class="statistic-question">
                 <p class="tl-question">{{ question.users_like.count }}</p>
-                <a href="#" data-model-name="question" data-id="{{ question.id }}" data-action="{% if request.user in question.users_like.all %}un{% endif %}like"
+                <a href="" data-model-name="question" data-id="{{ question.id }}" data-action="{% if request.user in question.users_like.all %}un{% endif %}like"
                     class="like-question">
                     {% if request.user not in question.users_like.all %}
                         Like
@@ -27,7 +27,7 @@
                 </a>
             </div>
             <div class="text-question-detail">
-                <p>{{ question.text_question }}</p>
+                <p>{{ question.formatted_markdown|safe }}</p>
                 <p class="tags">
                     {% for tag in question.tags.all %}
                         <a href="{% url "question:tag_detail" tag.slug %}">
@@ -76,7 +76,7 @@
         <div class="answer">
             <div class="statistic-question">
                 <p class="tl-answer-{{ answer.id }}">{{ answer.users_like.count }}</p>
-                <a href="#" data-id="{{ answer.id }}" data-action="{% if request.user in answer.users_like.all %}un{% endif %}like"
+                <a href="" data-id="{{ answer.id }}" data-action="{% if request.user in answer.users_like.all %}un{% endif %}like"
                     class="like-answer-{{ answer.id }}">
                     {% if request.user not in answer.users_like.all %}
                         Like
@@ -99,7 +99,7 @@
                 {% endif %}
             </div>
             <div class="text-question-detail">
-                <p>{{ answer.text_answer }}</p>
+                <p>{{ answer.formatted_markdown|safe }}</p>
                 <div class="tags">
 
                 </div>
