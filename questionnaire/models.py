@@ -54,6 +54,10 @@ class Answer(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        # ordering = ('-is_correct', '-created',)
+        ordering = ('-created',)
+
     def __str__(self):
         return self.user.username + ', ' + self.text_answer
 
@@ -66,7 +70,9 @@ class Answer(models.Model):
 
 def send_email_question_user(sender, instance, signal, *args, **kwargs):
     from .tasks import send_message
-    send_message.delay(instance.pk)
+    created = kwargs.get('created')
+    if created:
+        send_message.delay(instance.pk)
 
 
 signals.post_save.connect(send_email_question_user, sender=Answer)
