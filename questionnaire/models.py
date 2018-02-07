@@ -1,4 +1,6 @@
 import datetime
+import urllib.request
+from lxml.html import fromstring
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.db import models
 from django.db.models import signals
@@ -12,8 +14,7 @@ from taggit.models import Tag
 
 class DescriptionTag(models.Model):
     tag = models.OneToOneField(Tag, related_name='description')
-    description = models.TextField()
-
+    description = models.TextField(blank=True)
 
 class Question(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='questions')
@@ -91,11 +92,6 @@ class Comment(models.Model):
 
 
 def parse_stack_description_tag(sender, instance, signal, *args, **kwargs):
-    from .tasks import parse_stack
-    DescriptionTag.objects.get_or_create(tag=instance)
-    if not instance.description.description:
-        parse_stack.delay(instance.pk)
-
+    DescriptionTag.objects.create(tag=instance)
 
 signals.post_save.connect(parse_stack_description_tag, sender=Tag)
-
