@@ -1,0 +1,26 @@
+version: '2'
+services:
+    web:
+        build: .
+        volumes:
+            - .:/code
+        command: python manage.py runserver 0.0.0.0:8000
+        ports:
+          - "8000:8000"
+        depends_on:
+          - db
+          - celery_redis
+    db:
+        image: postgres
+
+    redis:
+        image: 'redis:latest'
+        hostname: redis
+
+    celery_redis:
+        build: .
+        command: celery worker -A local_stack_overflow --loglevel=debug --beat
+        links:
+          - redis
+        depends_on:
+          - redis
