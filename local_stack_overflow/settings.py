@@ -98,12 +98,7 @@ DATABASES = {
         # 'USER': 'pasha',
         # 'HOST': '127.0.0.1',
         # 'PORT': '5432',
-        # 'PASSWORD': '12345'
-        # 'NAME': os.environ.get('POSTGRES_NAME'),
-        # 'USER': os.environ.get('POSTGRES_USER'),
-        # 'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
-        # 'HOST': os.environ.get('POSTGRES_HOST'),
-        # 'PORT': os.environ.get('POSTGRES_PORT'),
+        # 'PASSWORD': '*****'
     }
 }
 
@@ -163,15 +158,16 @@ REDIS_PORT = '6379'
 CELERY_BROKER_URL = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
 # BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
 CELERY_RESULT_BACKEND = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
+CELERY_TASK_RESULT_EXPIRES = 86400 # 1 day
 
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'lisovchenko.pasha@gmail.com'
-EMAIL_HOST_PASSWORD = 'qwerty123xaxa'
+EMAIL_HOST_PASSWORD = '*****'
 EMAIL_PORT = 587
 
-
+# configure queues, currently we have only one
 CELERY_QUEUES = (
     Queue('default', Exchange('default'), routing_key='default'),
     Queue('high', Exchange('high'), routing_key='high'),
