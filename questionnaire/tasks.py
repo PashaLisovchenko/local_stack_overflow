@@ -1,4 +1,6 @@
-from taggit.models import Tag
+from datetime import timedelta
+from celery.task import periodic_task
+from django.template.defaultfilters import lower
 import urllib.request
 from lxml.html import fromstring
 from .models import Answer, DescriptionTag
@@ -22,16 +24,27 @@ def send_message(answer_id):
     print('send email')
 
 
-@app.task
-def parse_stack(tag_id):
-    tag = Tag.objects.get(id=tag_id)
-    page_url = 'https://stackoverflow.com/tags/' + tag.slug + '/info'
-    response = urllib.request.urlopen(page_url).read()
-    page = fromstring(response)
-    description_tag = page.xpath('//div[@class="post-text"]/div[@class="welovestackoverflow"]/p')
-    description_tag = description_tag[0].text.strip()
-    descr_tag = DescriptionTag.objects.get(tag=tag)
-    descr_tag.description = description_tag
-    descr_tag.save()
-    print(tag)
-    print('description_tag saved')
+@periodic_task(run_every=timedelta(seconds=10))
+def parse():
+    tag_descr = DescriptionTag.objects.filter(description='')
+    print('Check needed parse?')
+    if tag_descr:
+        print('PARSE DESCRIPTION TAG...')
+        for descr in tag_descr:
+            tag = descr.tag
+            page_url = 'https://stackoverflow.com/tags/' + lower(tag.name) + '/info'
+            try:
+                response = urllib.request.urlopen(page_url).read()
+                page = fromstring(response)
+                try:
+                    description_tag = page.xpath('//div[@class="post-text"]/div[@class="welovestackoverflow"]/p')
+                    description_tag = description_tag[0].text.strip()
+                except IndexError:
+                    description_tag = page.xpath('//div[@class="question"]/div[@class="welovestackoverflow"]/div/p[1]')
+                    description_tag = description_tag[0].text.strip()
+            except OSError:
+                description_tag = 'Unknown tag'
+            descr.description = description_tag
+            descr.save()
+            print(tag)
+            print('description_tag saved')
