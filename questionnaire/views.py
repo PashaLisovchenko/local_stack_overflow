@@ -30,6 +30,9 @@ class TagList(ListView):
     model = Tag
     paginate_by = 100
 
+    def get_queryset(self):
+        return Tag.objects.all().order_by("-id")
+
     def get_context_data(self, **kwargs):
         context = super(TagList, self).get_context_data(**kwargs)
         context['section'] = 'Tags'
