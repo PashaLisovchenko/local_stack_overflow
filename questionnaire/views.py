@@ -31,7 +31,9 @@ class TagList(ListView):
     paginate_by = 100
 
     def get_queryset(self):
-        return Tag.objects.all().order_by("-id")
+        return Tag.objects.all().annotate(
+            total_use=Count('taggit_taggeditem_items')
+        ).order_by('-total_use')
 
     def get_context_data(self, **kwargs):
         context = super(TagList, self).get_context_data(**kwargs)
@@ -43,6 +45,11 @@ class UserList(ListView):
     template_name = 'questionnaire/user_list.html'
     model = User
     paginate_by = 36
+
+    def get_queryset(self):
+        return User.objects.all().annotate(
+            total_question=Count('questions')
+        ).order_by('-total_question')
 
     def get_context_data(self, **kwargs):
         context = super(UserList, self).get_context_data(**kwargs)
