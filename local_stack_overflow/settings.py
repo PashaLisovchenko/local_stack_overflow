@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 
 import os
 from django.core.urlresolvers import reverse_lazy
+from kombu import Queue, Exchange
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -28,7 +29,7 @@ SECRET_KEY = 'hls$0^7ro7l&l66%)7%#w31%@96nlqzd9#f4z!r84r*p3b4ko&'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -89,11 +90,20 @@ DATABASES = {
         # 'ENGINE': 'django.db.backends.sqlite3',
         # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'db_local_stack_overflow',
-        'USER' : 'pasha',
-        'PASSWORD' : '***',
-        'HOST' : '127.0.0.1',
-        'PORT' : '5432',
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'HOST': 'db',
+        'PORT': '5432',
+        # 'NAME': 'db_local_stack_overflow',
+        # 'USER': 'pasha',
+        # 'HOST': '127.0.0.1',
+        # 'PORT': '5432',
+        # 'PASSWORD': '12345'
+        # 'NAME': os.environ.get('POSTGRES_NAME'),
+        # 'USER': os.environ.get('POSTGRES_USER'),
+        # 'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+        # 'HOST': os.environ.get('POSTGRES_HOST'),
+        # 'PORT': os.environ.get('POSTGRES_PORT'),
     }
 }
 
@@ -148,16 +158,26 @@ MEDIA_ROOT = os.path.join(
 
 
 # REDIS related settings
-REDIS_HOST = 'localhost'
+REDIS_HOST = 'redis'
 REDIS_PORT = '6379'
 CELERY_BROKER_URL = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
-BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
+# BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
 CELERY_RESULT_BACKEND = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
 
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'lisovchenko.pasha@gmail.com'
-EMAIL_HOST_PASSWORD = '***'
+EMAIL_HOST_PASSWORD = 'qwerty123xaxa'
 EMAIL_PORT = 587
-# celery worker -A local_stack_overflow --loglevel=debug --concurrency=4
+
+
+CELERY_QUEUES = (
+    Queue('default', Exchange('default'), routing_key='default'),
+    Queue('high', Exchange('high'), routing_key='high'),
+    Queue('low', Exchange('low'), routing_key='low'),
+)
+CELERY_ROUTES = {
+    'questionnaire.tasks.parse_stack': {'queue': 'high', 'routing_key': 'high'},
+    'questionnaire.tasks.send_message': {'queue': 'low', 'routing_key': 'low'},
+}
