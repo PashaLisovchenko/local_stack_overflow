@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Count
@@ -177,7 +178,7 @@ class CommentAddQuestion(DetailView, FormMixin):
         return redirect(question)
 
 
-class AddQuestionView(CreateView):
+class AddQuestionView(LoginRequiredMixin, CreateView):
     template_name = 'questionnaire/add_question.html'
     form_class = AddQuestion
     model = Question
