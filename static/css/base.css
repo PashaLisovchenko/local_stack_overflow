@@ -659,3 +659,21 @@ i.icon {
     opacity: 1;
   }
 }
+.action {
+    font-size: 1.5rem;
+    clear:both;
+    overflow:auto;
+}
+.action .user_action{
+    float: left;
+    margin:0 10px 10px 0;
+}
+.action .user_action img{
+    width: 6rem;
+    height: 6rem;
+    box-shadow: 2px 2px 4px rgba(12,13,14,0.7);
+}
+.action .date {
+    font-style:italic;
+    color: #515151;
+}

@@ -1,3 +1,4 @@
+from actstream.models import Action
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
@@ -13,6 +14,7 @@ from django.views.decorators.http import require_POST
 from questionnaire.forms import AnswerForm, CommentForm, AddQuestion
 from .models import Question, Answer, Comment
 from taggit.models import Tag
+from actstream import action
 
 
 class QuestionList(ListView):
@@ -118,7 +120,8 @@ class QuestionDetail(FormMixin, DetailView):
         question = self.get_object()
         user = self.request.user
         text_answer = self.request.POST.get("text_answer")
-        Answer.objects.create(user=user, question=question, text_answer=text_answer)
+        answer = Answer.objects.create(user=user, question=question, text_answer=text_answer)
+        action.send(user, verb='answered', target=answer)
         return redirect(question)
 
 
@@ -147,6 +150,7 @@ class CommentAddAnswer(DetailView, FormMixin):
             comment=text_comment
         )
         new_comment.save()
+        action.send(user, verb='answer commented', target=answer)
         return redirect(answer.question)
 
 
@@ -175,6 +179,7 @@ class CommentAddQuestion(DetailView, FormMixin):
             comment=text_comment
         )
         new_comment.save()
+        action.send(user, verb='question commented', target=question)
         return redirect(question)
 
 
@@ -192,6 +197,7 @@ class AddQuestionView(LoginRequiredMixin, CreateView):
         question.save()
         for tag in tags:
             question.tags.add(tag)
+        action.send(user, verb='asked', target=question)
         return redirect(reverse_lazy('question:question_detail', kwargs={'id': question.id, 'slug': question.slug}))
 
 
@@ -207,6 +213,7 @@ def current_answer(request):
     data = {
         'is_correct': answer.is_correct
     }
+    action.send(request.user, verb='selected correct answer', target=answer)
     return JsonResponse(data)
 
 
@@ -215,17 +222,18 @@ def current_answer(request):
 def user_like(request):
     model_name = request.POST.get('model_name')
     id_object = request.POST.get('id')
-    action = request.POST.get('action')
-    if id_object and action:
+    action_post = request.POST.get('action')
+    if id_object and action_post:
         if model_name == 'question':
             question = Question.objects.get(id=id_object)
-            if action == 'like':
+            if action_post == 'like':
                 question.users_like.add(request.user)
+                action.send(request.user, verb='like', target=question)
             else:
                 question.users_like.remove(request.user)
         else:
             answer = Answer.objects.get(id=id_object)
-            if action == 'like':
+            if action_post == 'like':
                 answer.users_like.add(request.user)
             else:
                 answer.users_like.remove(request.user)
@@ -236,3 +244,14 @@ def search_tag(request):
     search_value = request.GET.get('suggestion', None)
     tags = Tag.objects.filter(name__contains=search_value)
     return render_to_response('questionnaire/tag_find.html', {'tag_list': tags})
+
+
+class ActionListView(ListView):
+    model = Action
+    template_name = 'questionnaire/actions.html'
+    paginate_by = 40
+
+    def get_context_data(self, **kwargs):
+        context = super(ActionListView, self).get_context_data(**kwargs)
+        context['section'] = 'Activity'
+        return context

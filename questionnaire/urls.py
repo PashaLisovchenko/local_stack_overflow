@@ -1,7 +1,7 @@
 from django.conf.urls import url, include
 from rest_framework.routers import DefaultRouter
 from .views import QuestionList, TagList, UserList, QuestionListByTag, QuestionDetail, current_answer, CommentAddAnswer, \
-    CommentAddQuestion, AddQuestionView, user_like, search_tag
+    CommentAddQuestion, AddQuestionView, user_like, search_tag, ActionListView
 from .api_views import QuestionViewSet, AnswerViewSet, TagViewSet, CommentViewSet, ProfileViewSet, UserViewSet
 
 
@@ -30,4 +30,6 @@ urlpatterns = [
     url(r'^ajax/find-tags/$', search_tag, name='find_tags'),
 
     url(r'api/', include(router.urls)),
+
+    url(r'^actions/list/$', ActionListView.as_view(), name="actions_list"),
 ]

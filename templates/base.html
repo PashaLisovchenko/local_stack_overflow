@@ -33,6 +33,9 @@
             <li {% if section == "Users" %}class="selected"{% endif %}>
                 <a href="{% url 'question:users' %}">Users</a>
             </li>
+            <li {% if section == "Activity" %}class="selected"{% endif %}>
+                <a href="{% url 'question:actions_list' %}">Activity</a>
+            </li>
         </ul>
         <ul class="menu-right">
             {% if request.user.is_authenticated %}
