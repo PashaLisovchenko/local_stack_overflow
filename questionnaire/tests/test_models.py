@@ -16,9 +16,9 @@ class QuestionModelTest(TestCase):
         q = Question.objects.create(id=1, title=title, text_question=text_question, user=user, slug=slug)
         q.tags.add('css', 'scale')
 
-    def test_user_is_username_comma_object_slug(self):
+    def test_object_slug_name(self):
         q = Question.objects.get(id=1)
-        expected_object_name = '%s, %s' % (q.user.username, q.slug)
+        expected_object_name = '%s' % (q.slug)
         self.assertEquals(expected_object_name, str(q))
 
     def test_get_absolute_url(self):

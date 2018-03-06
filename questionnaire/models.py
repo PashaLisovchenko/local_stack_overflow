@@ -1,6 +1,4 @@
 import datetime
-import urllib.request
-from lxml.html import fromstring
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.db import models
 from django.db.models import signals
@@ -15,6 +13,7 @@ from taggit.models import Tag
 class DescriptionTag(models.Model):
     tag = models.OneToOneField(Tag, related_name='description')
     description = models.TextField(blank=True)
+
 
 class Question(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='questions')
@@ -36,13 +35,10 @@ class Question(models.Model):
         return markdownify(self.text_question)
 
     def __str__(self):
-        return self.user.username + ', ' + self.slug
+        return self.slug
 
     def get_absolute_url(self):
         return reverse('question:question_detail', args=[self.id, self.slug])
-
-    def get_tags_display(self):
-        return self.tags.values_list('name', flat=True)
 
 
 class Answer(models.Model):
@@ -60,13 +56,11 @@ class Answer(models.Model):
         ordering = ('-created',)
 
     def __str__(self):
-        return self.user.username + ', ' + self.text_answer
+        return self.text_answer
 
     @property
     def formatted_markdown(self):
         return markdownify(self.text_answer)
-    # def get_absolute_url(self):
-    #     return reverse('question:detail_question', args=[self.id, self.slug])
 
 
 def send_email_question_user(sender, instance, signal, *args, **kwargs):
@@ -93,5 +87,6 @@ class Comment(models.Model):
 
 def parse_stack_description_tag(sender, instance, signal, *args, **kwargs):
     DescriptionTag.objects.create(tag=instance)
+
 
 signals.post_save.connect(parse_stack_description_tag, sender=Tag)

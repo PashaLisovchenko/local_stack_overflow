@@ -24,7 +24,7 @@ def send_message(answer_id):
     print('send email')
 
 
-@periodic_task(run_every=timedelta(seconds=10))
+@periodic_task(run_every=timedelta(minutes=30))
 def parse():
     tag_descr = DescriptionTag.objects.filter(description='')
     print('Check needed parse?')
