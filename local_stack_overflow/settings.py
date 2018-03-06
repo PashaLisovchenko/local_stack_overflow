@@ -37,6 +37,7 @@ ALLOWED_HOSTS = ['*']
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
+    'django.contrib.sites',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -48,8 +49,16 @@ INSTALLED_APPS = [
     'taggit_serializer',
     'markdownx',
     'rest_framework',
+    'actstream',
 ]
 
+ACTSTREAM_SETTINGS = {
+    'MANAGER': 'questionnaire.managers.MyActionManager',
+    'FETCH_RELATIONS': True,
+    'USE_PREFETCH': True,
+    'USE_JSONFIELD': False,
+    'GFK_FETCH_DEPTH': 1,
+}
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -164,7 +173,7 @@ CELERY_TASK_RESULT_EXPIRES = 86400 # 1 day
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'lisovchenko.pasha@gmail.com'
-EMAIL_HOST_PASSWORD = '*****'
+EMAIL_HOST_PASSWORD = 'qwerty123xaxa'
 EMAIL_PORT = 587
 
 # configure queues, currently we have only one

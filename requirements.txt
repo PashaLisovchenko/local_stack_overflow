@@ -2,6 +2,7 @@ amqp==2.2.2
 billiard==3.5.0.3
 celery==4.1.0
 Django==1.11
+django-activity-stream==0.6.5
 django-markdownx==2.0.22
 django-taggit==0.22.2
 django-taggit-serializer==0.1.5
